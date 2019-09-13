@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from "react-router";
+
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -57,9 +59,7 @@ function a11yProps(index) {
   };
 }
 
-
-
-export default function BasicAppBar() {
+function BasicAppBar(props) {
 
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
@@ -70,7 +70,7 @@ export default function BasicAppBar() {
 
   function signOut() {
     auth0Client.signOut();
-    this.props.history.replace('/');
+    props.history.replace('/');
   };
 
   return (
@@ -85,7 +85,8 @@ export default function BasicAppBar() {
   <Typography variant="h6" className={classes.title}>
       
   </Typography>
-  <Button color="inherit" onClick={auth0Client.signOut}>Logout</Button>
+  <label className="mr-2 text-white">{auth0Client.getProfile().name}</label>
+  <Button color="inherit" onClick={signOut}>Logout</Button>
   </Toolbar>
   </AppBar>
   <TabPanel value={value} index={0}>
@@ -100,3 +101,6 @@ export default function BasicAppBar() {
   </div>
   )
 }
+
+
+export default withRouter(BasicAppBar);

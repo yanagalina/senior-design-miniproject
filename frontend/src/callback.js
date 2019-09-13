@@ -4,21 +4,11 @@ import { withRouter } from "react-router";
 
 
 class Callback extends Component {
-  async componentDidMount() {
-  	try {
-  		console.log("handling authentication");
-    console.log(window.location.href);
-
-  		console.log(window.location.hash);
-  		var res = await auth0Client.handleAuthentication();
-  	}
-  	catch (err)
-  	{
-  		console.error(err);
-  	}
-    
+  componentDidMount = async () => {
+    let res = await auth0Client.handleAuthentication();
     this.props.history.replace('/');
   }
+
 
   render() {
   	console.log("callback page");
