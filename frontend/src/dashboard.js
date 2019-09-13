@@ -1,6 +1,8 @@
 import React , { Component }  from 'react';
 import axios from 'axios';
 import BasicAppBar from './basicAppBar';
+import { withRouter } from "react-router";
+
 class Dashboard extends Component {
 	state = {
     data: [],
@@ -12,6 +14,7 @@ class Dashboard extends Component {
     objectToUpdate: null,
   };
   render() {
+    console.log("Dashboard");
     return (
       <div>
       <BasicAppBar/>
@@ -23,4 +26,4 @@ class Dashboard extends Component {
 
 }
 
-export default Dashboard;
+export default withRouter(Dashboard);

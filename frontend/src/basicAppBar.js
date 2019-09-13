@@ -12,6 +12,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 
 import WeatherPanel from './weatherPanel';
+import auth0Client from './auth';
 
 
 function TabPanel(props) {
@@ -58,7 +59,6 @@ function a11yProps(index) {
 
 
 
-
 export default function BasicAppBar() {
 
   const classes = useStyles();
@@ -67,6 +67,11 @@ export default function BasicAppBar() {
   function handleChange(event, newValue) {
     setValue(newValue);
   }
+
+  function signOut() {
+    auth0Client.signOut();
+    this.props.history.replace('/');
+  };
 
   return (
   <div>
@@ -80,7 +85,7 @@ export default function BasicAppBar() {
   <Typography variant="h6" className={classes.title}>
       
   </Typography>
-  <Button color="inherit">Logout</Button>
+  <Button color="inherit" onClick={auth0Client.signOut}>Logout</Button>
   </Toolbar>
   </AppBar>
   <TabPanel value={value} index={0}>
