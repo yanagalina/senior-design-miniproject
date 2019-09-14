@@ -7,12 +7,11 @@ const client = new MongoClient(uri, { useNewUrlParser: true });
 function hum1_sim() {
 	// generate a random value between 0 and 100%
 	var val = Math.floor(Math.random() * Math.floor(101));
-	// client.connect(err => {
-	//   const collection = client.db("senior-design-mp").collection("humidity-sources");
-	//   // perform actions on the collection object
-	//   client.close();
-	// });
-
+	client.connect((err) => {
+	  const collection = client.db("senior-design-mp").collection("humidity-sources");
+	  // perform actions on the collection object
+	  client.close();
+	});
 }
 
 function hum2_sim() {

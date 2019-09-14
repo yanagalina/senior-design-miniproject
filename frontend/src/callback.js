@@ -7,7 +7,8 @@ import { withRouter } from "react-router";
 class Callback extends Component {
   componentDidMount = async () => {
     let res = await auth0Client.handleAuthentication();
-    let res2 = await axios.post('localhost:2000/api/user', 
+    console.log(auth0Client.getIdToken());
+    let res2 = await axios.post('http://localhost:2000/api/user', {},
       {
        headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
       });

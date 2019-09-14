@@ -46,25 +46,26 @@ app.get('/api/hello', checkJwt,  (req, res) => {
 
 
 /* check if user exists in DB, if not add them */
-app.post('/api/user', checkJwt, async (req, res) => {
-	var selector = {_id : req.user.sub };
-
-	client.connect(err => {
-	  const collection = client.db("senior-design-mp").collection("users");
-	  collection.update(
-	  	selector,
-	  	{setOnInsert: { 
-	  		_id: req.user.sub,
-	  		source_ids : {}, 
-	  		}
-	  	},
-	  	{upsert: true},
-	  	(err, res) => {
-		    if (err) throw err;
-		    client.close();
-		    res.send(200);
-		});
-	});
+app.post('/api/user', checkJwt, (req, res) => {
+	// var selector = {_id : req.user.sub };
+	console.log(req.user);
+	res.send(200);
+	// client.connect(err => {
+	//   const collection = client.db("senior-design-mp").collection("users");
+	//   collection.update(
+	//   	selector,
+	//   	{setOnInsert: { 
+	//   		_id: req.user.sub,
+	//   		source_ids : {}, 
+	//   		}
+	//   	},
+	//   	{upsert: true},
+	//   	(err, res) => {
+	// 	    if (err) throw err;
+	// 	    client.close();
+	// 	    res.send(200);
+	// 	});
+	// });
 });
 
 

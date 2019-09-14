@@ -1,4 +1,5 @@
 import auth0 from 'auth0-js';
+import axios from 'axios';
 
 class Auth {
   constructor() {
@@ -36,7 +37,7 @@ class Auth {
 
   handleAuthentication() {
     return new Promise((resolve, reject) => {
-      this.auth0.parseHash((err, authResult) => {
+      this.auth0.parseHash(async (err, authResult) => {
         if (err) {
           return reject(err);
         }
