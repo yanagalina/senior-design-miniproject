@@ -45,7 +45,8 @@ app.get('/api/hello', checkJwt,  (req, res) => {
 });
 
 
-app.post('/api/addUser', checkJwt, async (req, res) => {
+/* check if user exists in DB, if not add them */
+app.post('/api/user', checkJwt, async (req, res) => {
 	var selector = {_id : req.user.sub };
 
 	client.connect(err => {
