@@ -11,9 +11,9 @@ class Callback extends Component {
       {
        headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
       });
-    }
     this.props.history.replace('/');
-  }
+    }
+
 
 
   render() {
