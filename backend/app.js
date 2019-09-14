@@ -42,6 +42,12 @@ app.get('/api/hello', checkJwt,  (req, res) => {
 	res.send('Hello World!')
 });
 
+app.get('/api/sources', checkJwt, async (req, res) => {
+	let db = mongoUtils.getDb();
+	const source_coll = db.collection("sensor-sources");
+	var sources = await source_coll.find({}, {name: 1, type: 1}).toArray();
+	res.send(sources);
+});
 
 /* check if user exists in DB, if not add them */
 app.post('/api/user', checkJwt, (req, res) => {
@@ -70,7 +76,7 @@ app.post('/api/user', checkJwt, (req, res) => {
 mongoUtils.connectToServer( function( err, client ) {
   if (err) console.log(err);
   console.log("connected to mongoDB");
-  const sims = require('./temp_and_hum_sim.js');
+  // const sims = require('./temp_and_hum_sim.js');
   app.listen(port, () => console.log(`listening on port ${port}!`));
 } );
 
