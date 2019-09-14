@@ -45,7 +45,7 @@ app.get('/api/hello', checkJwt,  (req, res) => {
 });
 
 
-app.post('/api/addUser', checkJwt, (req, res) => {
+app.post('/api/addUser', checkJwt, async (req, res) => {
 	var selector = {_id : req.user.sub };
 
 	client.connect(err => {
