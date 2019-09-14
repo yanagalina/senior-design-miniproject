@@ -6,9 +6,7 @@ const port = 2000;
 const router = express.Router();
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://yanagalina:rK@x8UDyB7bEYXS@cluster0-mrpwo.mongodb.net/test?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true });
+var mongoUtils = require('./mongo_utils');
 
 app.use(cors());
 
@@ -69,5 +67,13 @@ app.post('/api/user', checkJwt, (req, res) => {
 });
 
 
+mongoUtils.connectToServer( function( err, client ) {
+  if (err) console.log(err);
+  console.log("connected to mongoDB");
+  const sims = require('./temp_and_hum_sim.js');
+  app.listen(port, () => console.log(`listening on port ${port}!`));
+} );
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+
+

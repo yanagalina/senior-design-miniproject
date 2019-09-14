@@ -1,17 +1,22 @@
 const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://yanagalina:rK@x8UDyB7bEYXS@cluster0-mrpwo.mongodb.net/test?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true });
+const ObjectID = require('mongodb').ObjectID;
+var mongoUtils = require('./mongo_utils');
 
+var db = mongoUtils.getDb();
 
 function hum1_sim() {
+	console.log("sim hum1");
 	// generate a random value between 0 and 100%
 	var val = Math.floor(Math.random() * Math.floor(101));
-	client.connect((err) => {
-	  const collection = client.db("senior-design-mp").collection("humidity-sources");
-	  // perform actions on the collection object
-	  client.close();
-	});
+	const data_coll = db.collection("sensor-data");
+	
+  data_coll.insertOne({
+  	sensor_id : new ObjectID("5d7d06d11c9d440000926594"),
+  	date: new Date(Date.now()).toISOString(),
+  	value: val,
+  }, (err, docs) => {
+  	if (err) throw err;
+  });
 }
 
 function hum2_sim() {
@@ -26,4 +31,4 @@ function temp2_sim() {
 
 }
 
-setInterval(intervalFunc, 1500);
+setInterval(hum1_sim, 60000);
