@@ -1,18 +1,23 @@
 const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const app = express();
 const port = 2000;
 const router = express.Router();
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://yanagalina:rK@x8UDyB7bEYXS@cluster0-mrpwo.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+
+app.use(cors());
+
+app.use(bodyParser.json());
 
 
-// get data for plot
-router.get('/getSourceData', (req, res) => {
- 
-});
 
-app.get('/', (req, res) => res.send('Hello World!'));
 
+/* Validate jwt */
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
     cache: true,
@@ -23,37 +28,44 @@ const checkJwt = jwt({
 
   // Validate the audience and the issuer.
   audience: 'XoIGhJP4xwck7msV1lZ1RqTWAXyxEYOw',
-  issuer: `https://jenninorell.auth0.com`,
+  issuer: `https://jenninorell.auth0.com/`,
   algorithms: ['RS256']
 });
 
-app.post('/', checkJwt, (req, res) => {
-  const {title, description} = req.body;
-  const newQuestion = {
-    id: questions.length + 1,
-    title,
-    description,
-    answers: [],
-    author: req.user.name,
-  };
-  questions.push(newQuestion);
-  res.status(200).send();
+app.get('/api/user_data', checkJwt, (req, res) => {
+	// check if user is in db
+	// if not, create entry
+
+	//send back 
 });
 
-// insert a new answer to a question
-app.post('/answer/:id', checkJwt, (req, res) => {
-  const {answer} = req.body;
-
-  const question = questions.filter(q => (q.id === parseInt(req.params.id)));
-  if (question.length > 1) return res.status(500).send();
-  if (question.length === 0) return res.status(404).send();
-
-  question[0].answers.push({
-    answer,
-    author: req.user.name,
-  });
-
-  res.status(200).send();
+app.get('/api/hello', checkJwt,  (req, res) => {
+	console.log(req.user)
+	res.send('Hello World!')
 });
+
+
+app.post('/api/addUser', checkJwt, (req, res) => {
+	var selector = {_id : req.user.sub };
+
+	client.connect(err => {
+	  const collection = client.db("senior-design-mp").collection("users");
+	  collection.update(
+	  	selector,
+	  	{setOnInsert: { 
+	  		_id: req.user.sub,
+	  		source_ids : {}, 
+	  		}
+	  	},
+	  	{upsert: true},
+	  	(err, res) => {
+		    if (err) throw err;
+		    client.close();
+		    res.send(200);
+		});
+	});
+});
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

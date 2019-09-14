@@ -38,12 +38,9 @@ class Auth {
     return new Promise((resolve, reject) => {
       this.auth0.parseHash((err, authResult) => {
         if (err) {
-          console.error(err);
           return reject(err);
         }
         if (!authResult || !authResult.idToken) {
-          console.log("auth result " + authResult);
-          console.error(err);
           return reject(err);
         }
         this.setSession(authResult);
@@ -53,7 +50,6 @@ class Auth {
   }
 
   silentAuth() {
-    console.log("silentAuth");
     return new Promise((resolve, reject) => {
       this.auth0.checkSession({}, (err, authResult) => {
         if (err) return reject(err);
