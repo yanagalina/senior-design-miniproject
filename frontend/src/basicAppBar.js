@@ -17,6 +17,7 @@ import Button from '@material-ui/core/Button';
 import WeatherPanel from './weatherPanel';
 import auth0Client from './auth';
 import Sources from './sources';
+import Graph from './graph';
 
 
 function TabPanel(props) {
@@ -94,10 +95,10 @@ function BasicAppBar(props) {
   </Toolbar>
   </AppBar>
   <TabPanel value={value} index={0}>
-    Temperature Graph
+    <Graph sourceType="temperature"/>
   </TabPanel>
   <TabPanel value={value} index={1}>
-    Humidity Graph
+    <Graph sourceType="humidity"/>
   </TabPanel>
   <TabPanel value={value} index={2}>
     <WeatherPanel/>

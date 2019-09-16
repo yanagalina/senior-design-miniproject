@@ -18,26 +18,12 @@ class Dashboard extends Component {
     objectToUpdate: null,
   };
 
-  helloWorld = async () => {
-    try {
-    var res = await axios.get('http://localhost:2000/api/hello', 
-      {
-       headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
-      });
-    }
-    catch(err) {
-      console.log(err);
-    }
-    console.log(res);
-  }
-
   render() {
     console.log("Dashboard");
     return (
       <div>
       <BasicAppBar/>
     "Main Dashboard"
-    <Button color="inherit" onClick={this.helloWorld}>HelloWorld</Button>
     </div>
       )
      
