@@ -75,6 +75,7 @@ app.post('/api/user', checkJwt, (req, res) => {
             console.log(req.user.given_name)
                             }
                })
+         res.send(200);
          
         
 //    userinfo.updateOne(
