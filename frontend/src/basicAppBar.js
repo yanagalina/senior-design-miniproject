@@ -16,7 +16,6 @@ import Button from '@material-ui/core/Button';
 
 import WeatherPanel from './weatherPanel';
 import auth0Client from './auth';
-import Sources from './sources';
 import Graph from './graph';
 
 
@@ -85,7 +84,6 @@ function BasicAppBar(props) {
     <Tab label="Temperature" {...a11yProps(0)} />
     <Tab label="Humidity" {...a11yProps(1)} />
     <Tab label="Weather" {...a11yProps(2)} />
-    <Tab label="Sources" {...a11yProps(3)} />
   </Tabs>
   <Typography variant="h6" className={classes.title}>
       
@@ -102,9 +100,6 @@ function BasicAppBar(props) {
   </TabPanel>
   <TabPanel value={value} index={2}>
     <WeatherPanel/>
-  </TabPanel>
-  <TabPanel value={value} index={3}>
-    <Sources/>
   </TabPanel>
   </div>
   )
