@@ -54,6 +54,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const imgStyle = {
+  "border-radius": "50%",
+  "margin-left": "10px",
+  "margin-right": "10px",
+}
+
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -88,7 +94,10 @@ function BasicAppBar(props) {
   <Typography variant="h6" className={classes.title}>
       
   </Typography>
-  <label className="mr-2 text-white">{auth0Client.getProfile().name}</label>
+  <label className="mr-2 text-white">
+    {auth0Client.getProfile().name}
+    <img src={auth0Client.getProfile().picture} width="30" height="30" style={imgStyle}/>
+  </label>
   <Button color="inherit" onClick={signOut}>Logout</Button>
   </Toolbar>
   </AppBar>
