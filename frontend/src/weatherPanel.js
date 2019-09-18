@@ -14,6 +14,7 @@ class WeatherPanel extends Component {
       lat: null,
       lon: null,
       forecasts: null,
+      location: null,
     };
   }
 
@@ -24,14 +25,11 @@ class WeatherPanel extends Component {
       var gridX = res1.data.properties.gridX;
       var gridY = res1.data.properties.gridY;
       var res2 = await axios.get(`https://api.weather.gov/gridpoints/TOP/${gridX},${gridY}/forecast`);
-      console.log(res2.data.properties.periods[0].icon);
+      console.log(res2.data);
       this.setState({
+        location: res1.data.properties.relativeLocation.properties.city + ", " + res1.data.properties.relativeLocation.properties.state,
         forecasts: res2.data.properties.periods,
       });
-
-
-
-
     }
     catch (error) {
       console.error(error);
@@ -44,7 +42,6 @@ class WeatherPanel extends Component {
     if ("geolocation" in navigator) {
       /* geolocation is available */
       navigator.geolocation.getCurrentPosition((position) => {
-        // TODO: Save this in local storage?
         this.setState({
           lat: position.coords.latitude,
           lon: position.coords.longitude,
@@ -60,71 +57,30 @@ class WeatherPanel extends Component {
   }
 
   render() {
+    if (this.state.forecasts === null) {
+      return ("Loading...")
+    }
     return (
-    //   <div>
-    //   Latitude: {this.state.lat} <br/>
-    //   longitude: {this.state.lon} <br/>
-    //   First forecast: {this.state.forecasts ? this.state.forecasts[0].detailedForecast : "none"}
-    //   pic: {this.state.forecasts ? this.state.forecasts[0].icon : "none"}
-    // </div>
+
 
 <React.Fragment>
 
     <div>
-    Latitude: {this.state.lat} <br/>
-    Longitude: {this.state.lon} <br/>
+    Location: {this.state.location} <br/>
     </div>
 
-    <div>
+    {this.state.forecasts && this.state.forecasts.map((forecast) => {
+      return(
+        <div>
+          <br/>
+          {forecast.name} : {forecast.shortForecast} <br/>
+          <img src={forecast.icon}/> <br/>
+          Temp: {forecast.temperature} °{forecast.temperatureUnit} <br/>
+        </div>
+      );
+    })}
 
-
-
-    <br/>{this.state.forecasts ? this.state.forecasts[0].name : "none" } : {this.state.forecasts ? this.state.forecasts[0].shortForecast : "none"} <br/>
-      <img src ={this.state.forecasts ? this.state.forecasts[0].icon : "none" }/> <br/>
-    Temp: {this.state.forecasts ? this.state.forecasts[0].temperature : "none"} {this.state.forecasts ? this.state.forecasts[0].temperatureUnit : "none"} <br/>
-    </div>
-
-    <div>
-    <br/> {this.state.forecasts ? this.state.forecasts[1].name : "none" } : {this.state.forecasts ? this.state.forecasts[1].shortForecast : "none"} <br/>
-    <img src ={this.state.forecasts ? this.state.forecasts[1].icon : "none" }/> <br/>
-    Temp: {this.state.forecasts ? this.state.forecasts[1].temperature : "none"} {this.state.forecasts ? this.state.forecasts[1].temperatureUnit : "none"} <br/>
-    </div>
-
-    <div>
-    <br/> {this.state.forecasts ? this.state.forecasts[2].name : "none" } : {this.state.forecasts ? this.state.forecasts[2].shortForecast : "none"} <br/>
-    <img src ={this.state.forecasts ? this.state.forecasts[2].icon : "none" }/> <br/>
-    Temp: {this.state.forecasts ? this.state.forecasts[2].temperature : "none"} {this.state.forecasts ? this.state.forecasts[2].temperatureUnit : "none"} <br/>
-    </div>
-
-    <div>
-    <br/> {this.state.forecasts ? this.state.forecasts[3].name : "none" } : {this.state.forecasts ? this.state.forecasts[3].shortForecast : "none"} <br/>
-    <img src ={this.state.forecasts ? this.state.forecasts[3].icon : "none" }/> <br/>
-    Temp: {this.state.forecasts ? this.state.forecasts[3].temperature : "none"} {this.state.forecasts ? this.state.forecasts[3].temperatureUnit : "none"} <br/>
-    </div>
-
-    <div>
-    <br/> {this.state.forecasts ? this.state.forecasts[4].name : "none" } : {this.state.forecasts ? this.state.forecasts[4].shortForecast : "none"} <br/>
-    <img src ={this.state.forecasts ? this.state.forecasts[4].icon : "none" }/> <br/>
-    Temp: {this.state.forecasts ? this.state.forecasts[4].temperature : "none"} {this.state.forecasts ? this.state.forecasts[4].temperatureUnit : "none"} <br/>
-    </div>
-    <div>
-    <br/> {this.state.forecasts ? this.state.forecasts[5].name : "none" } : {this.state.forecasts ? this.state.forecasts[5].shortForecast : "none"} <br/>
-    <img src ={this.state.forecasts ? this.state.forecasts[5].icon : "none" }/> <br/>
-    Temp: {this.state.forecasts ? this.state.forecasts[5].temperature : "none"} {this.state.forecasts ? this.state.forecasts[5].temperatureUnit : "none"} <br/>
-    </div>
-
-    <div>
-    <br/> {this.state.forecasts ? this.state.forecasts[6].name : "none" } : {this.state.forecasts ? this.state.forecasts[6].shortForecast : "none"} <br/>
-    <img src ={this.state.forecasts ? this.state.forecasts[6].icon : "none" }/> <br/>
-    Temp: {this.state.forecasts ? this.state.forecasts[6].temperature : "none"} {this.state.forecasts ? this.state.forecasts[6].temperatureUnit : "none"} <br/>
-    </div>
-
-    <div>
-    <br/> {this.state.forecasts ? this.state.forecasts[7].name : "none" } : {this.state.forecasts ? this.state.forecasts[7].shortForecast : "none"} <br/>
-    <img src ={this.state.forecasts ? this.state.forecasts[7].icon : "none" }/> <br/>
-    Temp: {this.state.forecasts ? this.state.forecasts[7].temperature : "none"} {this.state.forecasts ? this.state.forecasts[7].temperatureUnit : "none"} <br/>
-    </div>
-    </React.Fragment>
+</React.Fragment>
     )
   }
 
