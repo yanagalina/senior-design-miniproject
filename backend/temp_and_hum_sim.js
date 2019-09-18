@@ -19,6 +19,7 @@ function hum1_sim() {
   	sensor_id : new ObjectID("5d7d06d11c9d440000926594"),
   	date: new Date(Date.now()).toISOString(),
   	value: hum1_val,
+    unit: "% (Relative Humidity)",
   }, (err, docs) => {
   	if (err) throw err;
   });
@@ -34,6 +35,7 @@ function hum2_sim() {
   	sensor_id : new ObjectID("5d7d07461c9d440000926596"),
   	date: new Date(Date.now()).toISOString(),
   	value: hum2_val,
+    unit: "% (Relative Humidity)"
   }, (err, docs) => {
   	if (err) throw err;
   });
@@ -49,6 +51,7 @@ function temp1_sim() {
   	sensor_id : new ObjectID("5d7d07611c9d440000926598"),
   	date: new Date(Date.now()).toISOString(),
   	value: temp1_val,
+    unit: "°F",
   }, (err, docs) => {
   	if (err) throw err;
   });
@@ -64,6 +67,7 @@ function temp2_sim() {
   	sensor_id : new ObjectID("5d7d8f3f1c9d440000ff3a53"),
   	date: new Date(Date.now()).toISOString(),
   	value: temp2_val,
+    unit: "°F"
   }, (err, docs) => {
   	if (err) throw err;
   });
