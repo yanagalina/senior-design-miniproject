@@ -23,10 +23,7 @@ class Callback extends Component {
 
 
   render() {
-  	console.log("callback page");
-  	console.log("Authenticated? " + auth0Client.isAuthenticated());
     console.log(window.location.href);
-
     return (
       <p>Loading profile...</p>
     );

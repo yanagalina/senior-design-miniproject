@@ -30,8 +30,6 @@ class Graph extends Component {
       await this.getData();
       var data = this.state.sourceData;
       if (data.length == 0) return;
-      console.log("data");
-      console.log(data);
     	var margin = {top: 10, right: 30, bottom: 30, left: 110},
         width = 500 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
@@ -90,15 +88,10 @@ class Graph extends Component {
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x));
 
-    console.log("unit: " + data[0].data[0].unit);
-      // text label for the x axis
-
-
     // text label for the y axis
-  svg.append("text")
-      
-      .attr("y", height/2)
-      .attr("x",  margin.left)
+  svg.append("text")  
+      .attr("y", -margin.left/2)
+      .attr("x",  -height/2)
       .attr("transform", "rotate(-90)")
       .attr("dy", "1em")
       .style("text-anchor", "middle")
@@ -299,7 +292,7 @@ class Graph extends Component {
         this.setState({loading: false, sourceData: data, selectedData: selectedData});
       }
       catch(err) {
-        console.log(err);
+        console.error(err);
       }
     }
 
@@ -316,13 +309,12 @@ class Graph extends Component {
         });
       }
       catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
 
 
     handleInputChange = (e) => {
-      console.log(this.state.sourceData);
       var ind = Number(e.target.getAttribute("index"));
       var arr = [...this.state.selectedData];;
       var loc = arr.indexOf(ind);
