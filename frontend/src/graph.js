@@ -2,6 +2,7 @@ import React , { Component }  from 'react';
 import axios from 'axios';
 import auth0Client from './auth';
 import * as d3 from "d3";
+import Button from '@material-ui/core/Button';
 
 
 
@@ -353,7 +354,7 @@ class Graph extends Component {
           </label>
         </>)
         })}
-        <button onClick={this.saveSources}>save sources</button>
+        <Button color="primary" variant="contained" onClick={this.saveSources}>save sources</Button>
         </form>
         <br/>
         {this.state.selectedData.length == 0 &&
