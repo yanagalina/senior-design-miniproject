@@ -11,10 +11,6 @@ class Graph extends Component {
       this.width   = null;
       this.height  = null;
       this.svg     = null;
-      this.x       = null;
-      this.y       = null;
-      this.line    = null;
-      this.lines   = null;
 
 
       this.state = {
@@ -31,10 +27,9 @@ class Graph extends Component {
 
 
     async componentDidMount() {
-      console.log("Mounting Component");
       await this.getData();
-      console.log("got data");
       var data = this.state.sourceData;
+      if (data.length == 0) return;
       console.log("data");
       console.log(data);
     	var margin = {top: 10, right: 30, bottom: 30, left: 110},
@@ -54,7 +49,6 @@ class Graph extends Component {
 		          "translate(" + (margin.left-50) + "," + (margin.top+50) + ")");
 
         this.svg = svg;
-        console.log(this.svg);
      // A color scale: one color for each group
     var myColor = d3.scaleOrdinal()
       .domain(data)
@@ -96,6 +90,20 @@ class Graph extends Component {
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x));
 
+    console.log("unit: " + data[0].data[0].unit);
+      // text label for the x axis
+
+
+    // text label for the y axis
+  svg.append("text")
+      
+      .attr("y", height/2)
+      .attr("x",  margin.left)
+      .attr("transform", "rotate(-90)")
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text(data[0].data[0].unit);  
+  
     // Add Y axis
     var y = d3.scaleLinear()
       .domain([y_min, y_max])
@@ -156,7 +164,8 @@ class Graph extends Component {
     }
 
     updateGraph = () => {
-      if (this.state.loading == true || this.svg == null) return;
+      console.log("data len " + this.state.sourceData.length);
+      if (this.state.loading == true || this.svg == null || this.state.sourceData.length == 0) return;
 
       var t = d3.transition()
         .duration(750);
@@ -276,18 +285,44 @@ class Graph extends Component {
           {
            headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
           });
-        console.log(res.data)
-        this.setState({loading: false, sourceData: res.data});
+        
+        var data = res.data.data;
+        var selectedData = [];
+        res.data.userSources.forEach((s) => {
+          for (let i in data) {
+            if (data[i]._id == s.id) {
+              selectedData.push(+i);
+            }
+          }
+        });
+        console.log(selectedData);
+        this.setState({loading: false, sourceData: data, selectedData: selectedData});
       }
       catch(err) {
         console.log(err);
       }
     }
 
-    
+    saveSources = async () => {
+
+      try {
+        let res = await axios.put('http://localhost:2000/api/sources',
+        {
+          type: this.props.sourceType,
+          sources: this.state.selectedData.map((d) => {return this.state.sourceData[d]._id}),
+        },
+        {
+         headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
+        });
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
 
 
     handleInputChange = (e) => {
+      console.log(this.state.sourceData);
       var ind = Number(e.target.getAttribute("index"));
       var arr = [...this.state.selectedData];;
       var loc = arr.indexOf(ind);
@@ -326,6 +361,7 @@ class Graph extends Component {
           </label>
         </>)
         })}
+        <button onClick={this.saveSources}>save sources</button>
         </form>
         <br/>
         {this.state.selectedData.length == 0 &&

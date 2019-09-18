@@ -26,25 +26,6 @@ const checkJwt = jwt({
   algorithms: ['RS256']
 });
 
-//var db = mongoUtils.getDb();
-var check = 10;
-
-
-app.get('/api/user', checkJwt, (req, res) => {
-        let db = mongoUtils.getDb();
-        const user_coll = db.collection("users");
-        res.send(user_coll);
-        console.log(req.user.given_name)
-    // check if user is in db
-	// if not, create entry
-	//send back 
-});
-
-app.get('/api/hello', checkJwt,  (req, res) => {
-	console.log(req.user.family_name)
-	res.send('Hello World!')
-});
-
 app.get('/api/sources', checkJwt, async (req, res) => {
 	let db = mongoUtils.getDb();
 	const source_coll = db.collection("sensor-sources");
@@ -59,6 +40,9 @@ app.get('/api/data', checkJwt, async (req, res) => {
 	var data = [];
 	let db = mongoUtils.getDb();
 	const source_coll = db.collection("sensor-sources");
+	const user_coll = db.collection("users");
+
+	// get 10 most recent data points  for each source with the proper type
 	var data = await source_coll.aggregate([ { '$match': { "type": type } },
         { '$lookup':
          	{'from':         "sensor-data",
@@ -76,46 +60,65 @@ app.get('/api/data', checkJwt, async (req, res) => {
          	}
         },
       ]).toArray();
-	res.send(JSON.stringify(data));
+
+	// get source ids associated with user
+	var userSources = await user_coll.findOne({_id: req.user.sub}, {sources: 1});
+	userSources = userSources.sources.filter((s)=>{return s.type == type});
+
+	res.send(JSON.stringify({data: data, userSources: userSources}));
 });
 
 
 /* check if user exists in DB, if not add them */
-app.post('/api/user', checkJwt, (req, res) => {
-         let db = mongoUtils.getDb();
+app.post('/api/user', checkJwt, async (req, res) => {
+	console.log("Checking user");
+    let db = mongoUtils.getDb();
 	console.log(req.user);
-         const  userinfo =  db.collection('users');
-        
-         var query = {_id: req.user.sub};
-         userinfo.findOne(query)
-         .then(result => {
-               if (result){
-                console.log(`Successfully found document: ${result}.`)
-        }else{
-         userinfo.insertOne({
-            _id: req.user.sub,
-            first_name: req.user.given_name,
-            last_name: req.user.family_name,
-            value: check,
-                            },(err, docs) => {
-                                if (err) throw err;
-                                    });
-            console.log(req.user.given_name)
-                            }
-               })
-         res.send(200);
-         
-        
-//    userinfo.updateOne(
-//        {_id: req.user.sub,
-//       // {$setonInsert:
-//        first_name: req.user.given_name,
-//        last_name: req.user.family_name },
-//        {upsert: true},
-//        (err, docs) => {
-//        if (err) throw err;
-//        });
-console.log(req.user.family_name);
+    const  userinfo =  db.collection('users');
+     var query = {_id: req.user.sub};
+     var docs = await userinfo.findOne(query);
+     console.log(docs);
+     if (docs == null) {
+     	userinfo.insertOne(
+     	{
+	        _id: req.user.sub,
+	        first_name: req.user.given_name,
+	        last_name: req.user.family_name,
+	        sources: [],
+        },
+        (err, docs) => {
+            if (err) throw err;
+        });
+     }
+     else {
+     	console.log(`Successfully found user ${docs}`);
+     }
+    
+     
+     res.sendStatus(200);
+});
+
+// Update sources of one type associated with user
+app.put('/api/sources', checkJwt, async (req, res) => {
+  console.log("updating sources");
+  var type = req.body.type;
+
+  let db = mongoUtils.getDb();
+  const  userinfo =  db.collection('users');
+  var docs = await userinfo.findOne({_id: req.user.sub});
+  var sources = [...docs.sources];
+  sources = sources.filter((s) => {return (s.type != type)});
+  for (source of req.body.sources) {
+  	sources.push({type: type, id: source});
+  }
+
+  docs = await userinfo.updateOne({_id: req.user.sub}, {
+  	"$set" : {
+  		"sources": sources,
+  	}
+  });
+
+  res.sendStatus(200);
 });
 
 mongoUtils.connectToServer( function( err, client ) {

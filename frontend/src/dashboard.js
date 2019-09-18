@@ -23,7 +23,6 @@ class Dashboard extends Component {
     return (
       <div>
       <BasicAppBar/>
-    "Main Dashboard"
     </div>
       )
      
