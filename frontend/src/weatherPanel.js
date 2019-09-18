@@ -1,5 +1,9 @@
 import React , { Component }  from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+
+
 
 
 class WeatherPanel extends Component {
@@ -10,6 +14,7 @@ class WeatherPanel extends Component {
       lat: null,
       lon: null,
       forecasts: null,
+      location: null,
     };
   }
 
@@ -20,23 +25,23 @@ class WeatherPanel extends Component {
       var gridX = res1.data.properties.gridX;
       var gridY = res1.data.properties.gridY;
       var res2 = await axios.get(`https://api.weather.gov/gridpoints/TOP/${gridX},${gridY}/forecast`);
-      console.log(res2);
+      console.log(res2.data);
       this.setState({
+        location: res1.data.properties.relativeLocation.properties.city + ", " + res1.data.properties.relativeLocation.properties.state,
         forecasts: res2.data.properties.periods,
       });
-
-
     }
     catch (error) {
       console.error(error);
     }
   }
 
+
+
   componentDidMount() {
     if ("geolocation" in navigator) {
       /* geolocation is available */
       navigator.geolocation.getCurrentPosition((position) => {
-        // TODO: Save this in local storage?
         this.setState({
           lat: position.coords.latitude,
           lon: position.coords.longitude,
@@ -52,12 +57,30 @@ class WeatherPanel extends Component {
   }
 
   render() {
+    if (this.state.forecasts === null) {
+      return ("Loading...")
+    }
     return (
-      <div>
-      Latitude: {this.state.lat} <br/>
-      longitude: {this.state.lon} <br/>
-      First forecast: {this.state.forecasts ? this.state.forecasts[0].detailedForecast : "none"}
-      </div>
+
+
+<React.Fragment>
+
+    <div>
+    Location: {this.state.location} <br/>
+    </div>
+
+    {this.state.forecasts && this.state.forecasts.map((forecast) => {
+      return(
+        <div>
+          <br/>
+          {forecast.name} : {forecast.shortForecast} <br/>
+          <img src={forecast.icon}/> <br/>
+          Temp: {forecast.temperature} °{forecast.temperatureUnit} <br/>
+        </div>
+      );
+    })}
+
+</React.Fragment>
     )
   }
 
@@ -66,4 +89,3 @@ class WeatherPanel extends Component {
 
 
 export default WeatherPanel;
-
